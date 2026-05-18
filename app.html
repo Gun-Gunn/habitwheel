@@ -141,15 +141,24 @@ async function loadData(){
 }
 
 async function save(){
-  // Debounce — wait 800ms after last change
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
-    const {error}=await sb.from('habit_data').upsert({
-      user_id:currentUser.id,
-      habits:state.habits,
-      data:state.data,
-      updated_at:new Date().toISOString()
-    },{onConflict:'user_id'});
+    const {data:existing}=await sb.from('habit_data').select('id').eq('user_id',currentUser.id).single();
+    let error;
+    if(existing){
+      ({error}=await sb.from('habit_data').update({
+        habits:state.habits,
+        data:state.data,
+        updated_at:new Date().toISOString()
+      }).eq('user_id',currentUser.id));
+    } else {
+      ({error}=await sb.from('habit_data').insert({
+        user_id:currentUser.id,
+        habits:state.habits,
+        data:state.data,
+        updated_at:new Date().toISOString()
+      }));
+    }
     if(error) showToast('Save failed!','error');
     else showToast('✓ Saved','success');
   },800);
