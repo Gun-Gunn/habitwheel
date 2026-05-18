@@ -92,7 +92,8 @@ async function handleSubmit(){
     if(error){showMsg(error.message,'error');btn.disabled=false;btn.textContent='Login';return;}
     checkRoleAndRedirect(data.user.id);
   } else {
-    const {data,error}=await sb.auth.signUp({email,password});
+    const name=document.getElementById('name').value.trim()||email.split('@')[0];
+    const {data,error}=await sb.auth.signUp({email,password,options:{data:{name}}});
     if(error){showMsg(error.message,'error');btn.disabled=false;btn.textContent='Sign Up';return;}
     showMsg('Account bana! Admin se access lene ke baad login karo.','success');
     btn.disabled=false;btn.textContent='Sign Up';
