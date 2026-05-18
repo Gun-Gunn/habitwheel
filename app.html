@@ -54,6 +54,7 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="app" id="mainApp" style="display:none">
   <div class="top">
     <div class="title">🌀 Habit Wheel</div>
+    <div id="greetingText" style="font-size:13px;color:#FF6B35;font-weight:500"></div>
     <div class="top-right">
       <select class="year-sel" id="yearSel"></select>
       <div class="month-nav">
@@ -115,6 +116,9 @@ async function init(){
   }
 
   currentUser=session.user;
+  const {data:profile}=await sb.from('profiles').select('name').eq('id',session.user.id).single();
+  const name=profile?.name||session.user.email.split('@')[0];
+  document.getElementById('greetingText').textContent='Hello, '+name+' 👋';
   await loadData();
   document.getElementById('loadingScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
