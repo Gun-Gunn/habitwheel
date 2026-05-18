@@ -116,8 +116,8 @@ async function init(){
   }
 
   currentUser=session.user;
-  const {data:profile}=await sb.from('profiles').select('name').eq('id',session.user.id).single();
-  const name=profile?.name||session.user.email.split('@')[0];
+  const {data:nameProfile}=await sb.from('profiles').select('name').eq('id',session.user.id).single();
+  const name=nameProfile?.name||session.user.email.split('@')[0];
   document.getElementById('greetingText').textContent='Hello, '+name+' 👋';
   await loadData();
   document.getElementById('loadingScreen').style.display='none';
