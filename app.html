@@ -44,6 +44,13 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .legend-item:hover{background:#FFE0CC;border-color:#FFD6C8}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 .legend-hint{font-size:10px;color:#ccc;width:100%;text-align:center;margin-top:2px}
+.emoji-btn{background:#FFF9F0;border:2px solid #FFD6C8;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.emoji-btn:hover{background:#FFE0CC;border-color:#FF9500}
+/* Emoji picker popup */
+.emoji-picker{position:fixed;z-index:2000;background:#fff;border:2px solid #FFE0CC;border-radius:14px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,0.15);display:none;flex-wrap:wrap;gap:4px;max-width:220px}
+.emoji-picker.open{display:flex}
+.emoji-option{font-size:18px;cursor:pointer;padding:4px;border-radius:6px;transition:background 0.15s;line-height:1}
+.emoji-option:hover{background:#FFF0E8}
 .wheel-wrap{display:flex;justify-content:center;margin:0.5rem 0}
 .stats-row{display:grid;gap:8px;margin-top:1rem}
 .stat-card{background:#fff;border:2px solid #FFE0CC;border-radius:10px;padding:8px;text-align:center;cursor:pointer;transition:border 0.2s}
@@ -96,6 +103,8 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 </style>
 </head>
 <body>
+
+<div class="emoji-picker" id="emojiPicker"></div>
 
 <!-- Note Modal -->
 <div class="modal-overlay" id="noteModal">
@@ -183,7 +192,7 @@ const ALL_LIGHT= ['#C8E6C9','#FFE0B2','#BBDEFB','#FCE4EC','#E1BEE7','#B2EBF2','#
 const MAX_HABITS=8;
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-let state={habits:['Morning walk','Study 1hr','No junk food','Read 30min'],data:{},notes:{},year:2026,month:5};
+let state={habits:['Morning walk','Study 1hr','No junk food','Read 30min'],emojis:['🚶','📚','🥗','📖'],data:{},notes:{},year:2026,month:5};
 let currentUser=null;
 let saveTimer=null, toastTimer=null;
 let pendingDay=null, pendingHi=null;
@@ -208,11 +217,12 @@ async function logout(){await sb.auth.signOut();window.location.href='index.html
 // ── DATA ──
 async function loadData(){
   const now=new Date();state.year=now.getFullYear();state.month=now.getMonth()+1;
-  const {data}=await sb.from('habit_data').select('habits,data,notes').eq('user_id',currentUser.id).single();
+  const {data}=await sb.from('habit_data').select('habits,data,notes,emojis').eq('user_id',currentUser.id).single();
   if(data){
     if(data.habits&&data.habits.length>0)state.habits=data.habits;
     if(data.data)state.data=data.data;
     if(data.notes)state.notes=data.notes;
+    if(data.emojis)state.emojis=data.emojis;
   }
 }
 
@@ -222,9 +232,9 @@ async function save(){
     const {data:existing}=await sb.from('habit_data').select('id').eq('user_id',currentUser.id).single();
     let error;
     if(existing){
-      ({error}=await sb.from('habit_data').update({habits:state.habits,data:state.data,notes:state.notes,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id));
+      ({error}=await sb.from('habit_data').update({habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id));
     } else {
-      ({error}=await sb.from('habit_data').insert({user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,updated_at:new Date().toISOString()}));
+      ({error}=await sb.from('habit_data').insert({user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,updated_at:new Date().toISOString()}));
     }
     if(error)showToast('Save failed!','error');
     else showToast('✓ Saved','success');
@@ -419,7 +429,9 @@ function toggleCell(day,hi){if(isFuture(day))return;openNoteModal(day,hi);}
 function addHabit(){
   const input=document.getElementById('newHabitInput');const val=input.value.trim();
   if(!val||state.habits.length>=MAX_HABITS)return;
-  state.habits.push(val);input.value='';save();render();
+  state.habits.push(val);
+  state.emojis.push('⭐');
+  input.value='';save();render();
 }
 function deleteHabit(i){
   if(state.habits.length<=1)return;
@@ -458,6 +470,7 @@ function deleteHabit(i){
   state.data=newData;
   state.notes=newNotes;
   state.habits.splice(i,1);
+  state.emojis.splice(i,1);
   save();render();
 }
 function updateHabit(i,val){state.habits[i]=val;save();renderLegend();renderStats();}
@@ -493,14 +506,50 @@ function getStreakAt(day,hi,y,m){
   return streak;
 }
 
+// ── EMOJI PICKER ──
+const EMOJI_LIST=['🚶','🏃','🧘','💪','🚴','🏊','🤸','⚽','🎯','📚','✍️','🎨','🎵','💻','🧑‍💻','📖','🥗','🥑','💧','🍎','☕','🌿','😴','🧠','❤️','🌟','🔥','⚡','🎉','🏆','💰','🧹','🪴','🐕','📝','🎸','🧪','🌅','🙏','✅'];
+let emojiPickerIndex=null;
+
+function openEmojiPicker(i,btn){
+  const picker=document.getElementById('emojiPicker');
+  if(emojiPickerIndex===i&&picker.classList.contains('open')){
+    picker.classList.remove('open');emojiPickerIndex=null;return;
+  }
+  emojiPickerIndex=i;
+  picker.innerHTML=EMOJI_LIST.map(e=>
+    `<span class="emoji-option" onclick="selectEmoji('${e}')">${e}</span>`
+  ).join('');
+  const rect=btn.getBoundingClientRect();
+  picker.style.top=(rect.bottom+6+window.scrollY)+'px';
+  picker.style.left=Math.min(rect.left,window.innerWidth-230)+'px';
+  picker.classList.add('open');
+}
+
+function selectEmoji(e){
+  if(emojiPickerIndex===null)return;
+  state.emojis[emojiPickerIndex]=e;
+  document.getElementById('emojiPicker').classList.remove('open');
+  emojiPickerIndex=null;
+  save();render();
+}
+
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#emojiPicker')&&!e.target.closest('.emoji-btn')){
+    document.getElementById('emojiPicker').classList.remove('open');
+    emojiPickerIndex=null;
+  }
+});
+
 // ── RENDER ──
 function renderHabits(){
-  document.getElementById('habitsRow').innerHTML=state.habits.map((h,i)=>`
-    <div class="habit-row">
-      <div class="habit-dot" style="background:${ALL_COLORS[i]}"></div>
+  document.getElementById('habitsRow').innerHTML=state.habits.map((h,i)=>{
+    const em=state.emojis[i]||'⭐';
+    return`<div class="habit-row">
+      <button class="emoji-btn" onclick="openEmojiPicker(${i},this)" title="Change emoji">${em}</button>
       <input class="habit-input" value="${h.replace(/"/g,'&quot;')}" placeholder="Habit ${i+1}" oninput="updateHabit(${i},this.value)"/>
       ${state.habits.length>1?`<button class="del-habit-btn" onclick="deleteHabit(${i})" title="Delete">🗑</button>`:''}
-    </div>`).join('');
+    </div>`;
+  }).join('');
   const addRow=document.getElementById('addRow'),maxNote=document.getElementById('maxNote');
   if(state.habits.length>=MAX_HABITS){addRow.style.display='none';maxNote.textContent='Max 8 habits reached';}
   else{addRow.style.display='flex';maxNote.textContent='';}
@@ -510,10 +559,11 @@ function renderLegend(){
   document.getElementById('legend').innerHTML=
     state.habits.map((h,i)=>{
       const streak=getStreak(i);
+      const em=state.emojis[i]||'⭐';
       const streakBadge=streak>=7?` <span style="color:#FFB300;font-weight:600">🔥${streak}</span>`:
                         streak>=3?` <span style="color:#FF6B35;font-weight:600">🔥${streak}</span>`:'';
       return`<div class="legend-item" onclick="openLogsModal(${i})" title="Logs dekhne ke liye tap karo">
-        <div class="legend-dot" style="background:${ALL_COLORS[i]}"></div>
+        <span style="font-size:13px">${em}</span>
         <span>${h||'Habit '+(i+1)}${streakBadge}</span>
       </div>`;
     }).join('')+
@@ -542,16 +592,23 @@ function renderWheel(){
       const path=arcPath(cx,cy,r1,r2,sA,eA);
       const onclick=future?'':` onclick="toggleCell(${d},${hi})"`;
       html+=`<path d="${path}" fill="${fill}" stroke="${done&&getStreakAt(d,hi,state.year,state.month)>=7?'#FFD700':today?'#FF3B30':'#fff'}" stroke-width="${done&&getStreakAt(d,hi,state.year,state.month)>=7?3:today?2.5:1}" opacity="${opacity}" style="cursor:${cursor}"${onclick}><title>${MONTH_NAMES[state.month-1]} ${d} — ${state.habits[hi]} — ${done?'✅ Done':'⬜ Not done'}${done&&getStreakAt(d,hi,state.year,state.month)>=3?' 🔥'+getStreakAt(d,hi,state.year,state.month)+' day streak':''}${hasNote?' 📝':''}</title></path>`;
+
+      // Emoji on cell
+      const em=state.emojis[hi]||'⭐';
+      const midA=(sA+eA)/2,midR=(r1+r2)/2,mp=polarToXY(cx,cy,midR,midA);
       if(done){
         const streakAt=getStreakAt(d,hi,state.year,state.month);
-        const midA=(sA+eA)/2,midR=(r1+r2)/2,mp=polarToXY(cx,cy,midR,midA);
         if(streakAt>=7){
           html+=`<text x="${mp.x}" y="${mp.y}" text-anchor="middle" dominant-baseline="middle" font-size="7" style="pointer-events:none">⭐</text>`;
         } else if(streakAt>=3){
           html+=`<text x="${mp.x}" y="${mp.y}" text-anchor="middle" dominant-baseline="middle" font-size="7" style="pointer-events:none">🔥</text>`;
-        } else if(hasNote){
-          html+=`<circle cx="${mp.x}" cy="${mp.y}" r="2.5" fill="white" opacity="0.75" style="pointer-events:none"/>`;
+        } else {
+          // Show emoji on done cell
+          html+=`<text x="${mp.x}" y="${mp.y}" text-anchor="middle" dominant-baseline="middle" font-size="7" opacity="0.9" style="pointer-events:none">${em}</text>`;
         }
+      } else if(!future){
+        // Low opacity emoji on undone cell
+        html+=`<text x="${mp.x}" y="${mp.y}" text-anchor="middle" dominant-baseline="middle" font-size="7" opacity="0.25" style="pointer-events:none">${em}</text>`;
       }
     }
   }
