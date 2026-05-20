@@ -39,13 +39,15 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.success{background:#2e7d32}
 .toast.error{background:#c62828}
-.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.75rem;justify-content:center}
-.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555;cursor:pointer;padding:3px 6px;border-radius:6px;transition:background 0.2s}
-.legend-item:hover{background:#FFE0CC}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0.5rem;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#555;cursor:pointer;padding:3px 8px;border-radius:6px;transition:background 0.2s;border:1.5px solid transparent}
+.legend-item:hover{background:#FFE0CC;border-color:#FFD6C8}
 .legend-dot{width:10px;height:10px;border-radius:50%}
+.legend-hint{font-size:10px;color:#ccc;width:100%;text-align:center;margin-top:2px}
 .wheel-wrap{display:flex;justify-content:center;margin:0.5rem 0}
 .stats-row{display:grid;gap:8px;margin-top:1rem}
-.stat-card{background:#fff;border:2px solid #FFE0CC;border-radius:10px;padding:8px;text-align:center}
+.stat-card{background:#fff;border:2px solid #FFE0CC;border-radius:10px;padding:8px;text-align:center;cursor:pointer;transition:border 0.2s}
+.stat-card:hover{border-color:#FF9500}
 .stat-pct{font-size:16px;font-weight:500}
 .stat-name{font-size:10px;color:#999;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .info-note{text-align:center;font-size:11px;color:#bbb;margin-bottom:0.5rem}
@@ -56,59 +58,61 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:18px;padding:1.5rem;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(255,59,48,0.15)}
 .modal-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem}
-.modal-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0}
+.modal-color-bar{width:4px;height:36px;border-radius:4px;flex-shrink:0}
 .modal-title{font-size:15px;font-weight:600;color:#333;flex:1}
 .modal-date{font-size:11px;color:#bbb}
-.modal-textarea{width:100%;height:90px;border:2px solid #FFD6C8;border-radius:10px;padding:10px;font-size:13px;color:#333;resize:vertical;background:#FFF9F0;font-family:inherit}
+.modal-status{font-size:11px;padding:3px 8px;border-radius:20px;margin-bottom:10px;display:inline-block}
+.status-done{background:#E8F5E9;color:#2e7d32}
+.status-undone{background:#FFF3E0;color:#E65100}
+.modal-textarea{width:100%;height:80px;border:2px solid #FFD6C8;border-radius:10px;padding:10px;font-size:13px;color:#333;resize:none;background:#FFF9F0;font-family:inherit}
 .modal-textarea:focus{outline:none;border-color:#FF6B35}
-.modal-btns{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
-.modal-cancel{padding:8px 16px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#666;cursor:pointer;font-size:13px}
-.modal-save{padding:8px 20px;border:none;border-radius:8px;background:#FF3B30;color:#fff;cursor:pointer;font-size:13px;font-weight:500}
+.modal-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.modal-cancel{padding:8px 14px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#666;cursor:pointer;font-size:12px}
+.modal-undo{padding:8px 14px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#FF5722;cursor:pointer;font-size:12px;display:none}
+.modal-save{padding:8px 20px;border:none;border-radius:8px;background:#FF3B30;color:#fff;cursor:pointer;font-size:13px;font-weight:500;margin-left:auto}
 .modal-save:hover{background:#E02020}
-.existing-note{background:#FFF9F0;border:2px solid #FFE0CC;border-radius:8px;padding:8px 10px;font-size:12px;color:#555;margin-bottom:10px;line-height:1.5}
-.existing-note-label{font-size:10px;color:#bbb;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px}
 
 /* LOGS MODAL */
-.logs-modal{background:#fff;border-radius:18px;padding:1.5rem;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:80vh;display:flex;flex-direction:column}
-.logs-header{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-shrink:0}
+.logs-modal{background:#fff;border-radius:18px;padding:1.5rem;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);max-height:82vh;display:flex;flex-direction:column}
+.logs-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem;flex-shrink:0}
+.logs-color-bar{width:4px;height:32px;border-radius:4px;flex-shrink:0}
 .logs-title{font-size:15px;font-weight:600;color:#333;flex:1}
-.logs-close{background:none;border:2px solid #FFD6C8;border-radius:8px;width:30px;height:30px;cursor:pointer;color:#FF3B30;font-size:16px;display:flex;align-items:center;justify-content:center}
-.logs-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-shrink:0;flex-wrap:wrap}
-.logs-tab{padding:5px 12px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#999;cursor:pointer;font-size:12px;transition:all 0.2s}
+.logs-close{background:none;border:2px solid #FFD6C8;border-radius:8px;width:30px;height:30px;cursor:pointer;color:#FF3B30;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logs-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-shrink:0;overflow-x:auto;padding-bottom:4px}
+.logs-tab{padding:5px 12px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#999;cursor:pointer;font-size:12px;transition:all 0.2s;white-space:nowrap;flex-shrink:0}
 .logs-tab.active{background:#FF3B30;color:#fff;border-color:#FF3B30}
 .logs-body{overflow-y:auto;flex:1}
-.log-entry{border-bottom:1px solid #FFF0E8;padding:10px 0;display:flex;gap:10px;align-items:flex-start}
+.log-entry{display:flex;align-items:flex-start;gap:10px;padding:10px 6px;border-bottom:1px solid #FFF0E8;position:relative}
 .log-entry:last-child{border-bottom:none}
-.log-day{font-size:20px;font-weight:700;color:#FF3B30;min-width:32px;text-align:center;line-height:1}
-.log-day-label{font-size:9px;color:#bbb;text-align:center}
-.log-content{flex:1}
-.log-habit{font-size:11px;font-weight:600;margin-bottom:2px}
-.log-note{font-size:12px;color:#555;line-height:1.5}
-.log-no-note{font-size:11px;color:#ccc;font-style:italic}
-.log-month-label{font-size:11px;color:#bbb;font-weight:500;margin:10px 0 4px;text-transform:uppercase;letter-spacing:0.5px}
+.log-day-badge{background:#FFF0E8;color:#FF3B30;font-size:14px;font-weight:700;border-radius:8px;padding:4px 8px;min-width:36px;text-align:center;flex-shrink:0;line-height:1.3}
+.log-note-text{font-size:13px;color:#444;line-height:1.5;flex:1;padding-top:2px}
+.log-no-note{font-size:12px;color:#ccc;font-style:italic;flex:1;padding-top:4px}
+.log-edit-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:13px;padding:2px 6px;border-radius:6px;transition:all 0.2s;flex-shrink:0}
+.log-edit-btn:hover{background:#FFF0E8;color:#FF6B35}
+.month-section-label{font-size:11px;color:#bbb;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;padding:10px 6px 4px;border-bottom:1px solid #FFF0E8}
 .empty-logs{text-align:center;padding:2rem;color:#bbb;font-size:13px}
-.view-all-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:1rem;padding:10px;border:2px solid #FFD6C8;border-radius:10px;background:#fff;color:#FF3B30;cursor:pointer;font-size:13px;font-weight:500;width:100%;transition:all 0.2s}
+.view-all-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:1rem;padding:10px;border:2px solid #FFD6C8;border-radius:10px;background:#fff;color:#FF3B30;cursor:pointer;font-size:13px;font-weight:500;width:100%;transition:all 0.2s;flex-shrink:0}
 .view-all-btn:hover{background:#FFF0EB}
 </style>
 </head>
 <body>
 
-<!-- Note Modal (jab wheel cell tap karo) -->
+<!-- Note Modal -->
 <div class="modal-overlay" id="noteModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-dot" id="noteDot"></div>
-      <div class="modal-title" id="noteTitle"></div>
-      <div class="modal-date" id="noteDate"></div>
+      <div class="modal-color-bar" id="noteDot"></div>
+      <div>
+        <div class="modal-title" id="noteTitle"></div>
+        <div class="modal-date" id="noteDate"></div>
+      </div>
     </div>
-    <div id="existingNoteWrap" style="display:none">
-      <div class="existing-note-label">Previous note</div>
-      <div class="existing-note" id="existingNote"></div>
-    </div>
-    <textarea class="modal-textarea" id="noteInput" placeholder="Aaj kya kiya? (optional — note likhna zaroori nahi)"></textarea>
+    <div id="noteStatusBadge" class="modal-status"></div>
+    <textarea class="modal-textarea" id="noteInput" placeholder="Kya kiya aaj? (optional)"></textarea>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeNoteModal()">Cancel</button>
-      <button class="modal-save" onclick="saveNote()">✓ Mark Done & Save</button>
+      <button class="modal-undo" id="undoBtn" onclick="undoCell()">✕ Mark Undone</button>
+      <button class="modal-save" id="noteSaveBtn" onclick="saveNote()">✓ Mark Done</button>
     </div>
   </div>
 </div>
@@ -117,7 +121,7 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 <div class="modal-overlay" id="logsModal">
   <div class="logs-modal">
     <div class="logs-header">
-      <div class="modal-dot" id="logsDot"></div>
+      <div class="logs-color-bar" id="logsColorBar"></div>
       <div class="logs-title" id="logsTitle"></div>
       <button class="logs-close" onclick="closeLogsModal()">✕</button>
     </div>
@@ -160,7 +164,6 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
     <svg id="wheel" width="560" height="560" viewBox="0 0 560 560" style="max-width:100%;height:auto"></svg>
   </div>
   <div class="stats-row" id="statsRow"></div>
-
   <div style="text-align:center;padding:1.5rem 0 0.5rem;font-size:12px;color:#bbb">
     Need help? <a href="mailto:gungunsindhwani5@gmail.com" style="color:#FF6B35;text-decoration:none;font-weight:500">gungunsindhwani5@gmail.com</a>
   </div>
@@ -182,12 +185,9 @@ const MONTH_NAMES=['January','February','March','April','May','June','July','Aug
 
 let state={habits:['Morning walk','Study 1hr','No junk food','Read 30min'],data:{},notes:{},year:2026,month:5};
 let currentUser=null;
-let saveTimer=null;
-let toastTimer=null;
-// Note modal state
+let saveTimer=null, toastTimer=null;
 let pendingDay=null, pendingHi=null;
-// Logs modal state
-let logsHabitIndex=null, logsViewAll=false;
+let logsHabitIndex=null;
 
 // ── AUTH ──
 async function init(){
@@ -203,7 +203,6 @@ async function init(){
   document.getElementById('mainApp').style.display='block';
   initControls();render();
 }
-
 async function logout(){await sb.auth.signOut();window.location.href='index.html';}
 
 // ── DATA ──
@@ -223,22 +222,15 @@ async function save(){
     const {data:existing}=await sb.from('habit_data').select('id').eq('user_id',currentUser.id).single();
     let error;
     if(existing){
-      ({error}=await sb.from('habit_data').update({
-        habits:state.habits,data:state.data,notes:state.notes,
-        updated_at:new Date().toISOString()
-      }).eq('user_id',currentUser.id));
+      ({error}=await sb.from('habit_data').update({habits:state.habits,data:state.data,notes:state.notes,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id));
     } else {
-      ({error}=await sb.from('habit_data').insert({
-        user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,
-        updated_at:new Date().toISOString()
-      }));
+      ({error}=await sb.from('habit_data').insert({user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,updated_at:new Date().toISOString()}));
     }
     if(error)showToast('Save failed!','error');
     else showToast('✓ Saved','success');
   },800);
 }
 
-// ── TOAST ──
 function showToast(msg,type='success'){
   const t=document.getElementById('toast');
   t.textContent=msg;t.className='toast '+type+' show';
@@ -248,92 +240,80 @@ function showToast(msg,type='success'){
 // ── CONTROLS ──
 function initControls(){
   const yearSel=document.getElementById('yearSel');yearSel.innerHTML='';
-  for(let y=2024;y<=2030;y++){
-    const o=document.createElement('option');o.value=y;o.textContent=y;
-    if(y===state.year)o.selected=true;yearSel.appendChild(o);
-  }
+  for(let y=2024;y<=2030;y++){const o=document.createElement('option');o.value=y;o.textContent=y;if(y===state.year)o.selected=true;yearSel.appendChild(o);}
   yearSel.onchange=()=>{state.year=parseInt(yearSel.value);render();};
   document.getElementById('prevMonth').onclick=()=>{state.month--;if(state.month<1){state.month=12;state.year--;document.getElementById('yearSel').value=state.year;}render();};
   document.getElementById('nextMonth').onclick=()=>{state.month++;if(state.month>12){state.month=1;state.year++;document.getElementById('yearSel').value=state.year;}render();};
 }
 
 // ── HELPERS ──
-function getDays(){return new Date(state.year,state.month,0).getDate();}
-function monthKey(y,m){y=y||state.year;m=m||state.month;return`${y}-${String(m).padStart(2,'0')}`;}
-function cellKey(d,hi,y,m){return`${monthKey(y,m)}:${d}:${hi}`;}
-function noteKey(d,hi,y,m){return`note:${monthKey(y,m)}:${d}:${hi}`;}
+function getDays(y,m){return new Date(y||state.year,(m||state.month),0).getDate();}
+function cellKey(d,hi,y,m){return`${y||state.year}-${String(m||state.month).padStart(2,'0')}:${d}:${hi}`;}
+function noteKey(d,hi,y,m){return`note:${y||state.year}-${String(m||state.month).padStart(2,'0')}:${d}:${hi}`;}
 function isFuture(day){const now=new Date();now.setHours(0,0,0,0);return new Date(state.year,state.month-1,day)>now;}
 function isToday(day){const now=new Date();return state.year===now.getFullYear()&&state.month===(now.getMonth()+1)&&day===now.getDate();}
 
 // ── NOTE MODAL ──
-function openNoteModal(day, hi){
+function openNoteModal(day,hi){
   if(isFuture(day))return;
-  pendingDay=day; pendingHi=hi;
+  pendingDay=day;pendingHi=hi;
   const done=!!state.data[cellKey(day,hi)];
   const existingNote=state.notes[noteKey(day,hi)]||'';
-
   document.getElementById('noteDot').style.background=ALL_COLORS[hi];
   document.getElementById('noteTitle').textContent=state.habits[hi]||'Habit '+(hi+1);
-  document.getElementById('noteDate').textContent=MONTH_NAMES[state.month-1]+' '+day;
-  document.getElementById('noteInput').value='';
-  document.getElementById('noteInput').placeholder=done?'Update your note...':'Aaj kya kiya? (optional)';
-
-  const wrap=document.getElementById('existingNoteWrap');
-  if(existingNote){
-    wrap.style.display='block';
-    document.getElementById('existingNote').textContent=existingNote;
-  } else {
-    wrap.style.display='none';
-  }
-
-  // Change button text if already done
-  document.querySelector('.modal-save').textContent=done?'💾 Update Note':'✓ Mark Done & Save';
+  document.getElementById('noteDate').textContent=MONTH_NAMES[state.month-1]+' '+day+', '+state.year;
+  document.getElementById('noteInput').value=existingNote;
+  document.getElementById('noteInput').placeholder=done?'Edit your note...':'Kya kiya aaj? (optional)';
+  const badge=document.getElementById('noteStatusBadge');
+  if(done){badge.textContent='✅ Already done';badge.className='modal-status status-done';}
+  else{badge.textContent='⬜ Not done yet';badge.className='modal-status status-undone';}
+  document.getElementById('undoBtn').style.display=done?'block':'none';
+  document.getElementById('noteSaveBtn').textContent=done?'💾 Update Note':'✓ Mark Done';
   document.getElementById('noteModal').classList.add('open');
   setTimeout(()=>document.getElementById('noteInput').focus(),100);
 }
 
-function closeNoteModal(){
-  document.getElementById('noteModal').classList.remove('open');
-  pendingDay=null;pendingHi=null;
-}
+function closeNoteModal(){document.getElementById('noteModal').classList.remove('open');pendingDay=null;pendingHi=null;}
+document.getElementById('noteModal').onclick=function(e){if(e.target===this)closeNoteModal();};
 
 function saveNote(){
   if(pendingDay===null)return;
   const note=document.getElementById('noteInput').value.trim();
-  const k=cellKey(pendingDay,pendingHi);
+  const ck=cellKey(pendingDay,pendingHi);
   const nk=noteKey(pendingDay,pendingHi);
-
-  // Toggle done
-  state.data[k]=true; // always mark done when saving from modal
-  if(note) state.notes[nk]=note;
-  else if(!state.notes[nk]) delete state.notes[nk]; // keep existing if no new input
-
+  state.data[ck]=true;
+  if(note)state.notes[nk]=note;
+  else delete state.notes[nk];
   save();renderWheel();renderStats();
   closeNoteModal();
 }
 
-// Close modal on overlay click
-document.getElementById('noteModal').onclick=function(e){if(e.target===this)closeNoteModal();};
+function undoCell(){
+  if(pendingDay===null)return;
+  const ck=cellKey(pendingDay,pendingHi);
+  const nk=noteKey(pendingDay,pendingHi);
+  delete state.data[ck];
+  delete state.notes[nk];
+  save();renderWheel();renderStats();
+  closeNoteModal();
+  showToast('Removed ✓','success');
+}
 
 // ── LOGS MODAL ──
 function openLogsModal(hi){
-  logsHabitIndex=hi;logsViewAll=false;
-  document.getElementById('logsDot').style.background=ALL_COLORS[hi];
-  document.getElementById('logsTitle').textContent=(state.habits[hi]||'Habit '+(hi+1))+' — Logs';
-  document.getElementById('viewAllBtn').textContent='📋 View All Months';
+  logsHabitIndex=hi;
+  document.getElementById('logsColorBar').style.background=ALL_COLORS[hi];
+  document.getElementById('logsTitle').textContent=state.habits[hi]||'Habit '+(hi+1);
   document.getElementById('viewAllBtn').style.display='flex';
   renderLogsTabs();
   renderLogsBody(state.year,state.month);
   document.getElementById('logsModal').classList.add('open');
 }
-
 function closeLogsModal(){document.getElementById('logsModal').classList.remove('open');}
 document.getElementById('logsModal').onclick=function(e){if(e.target===this)closeLogsModal();};
 
 function renderLogsTabs(){
-  // Show last 6 months as tabs
-  const tabs=[];
-  let y=state.year,m=state.month;
+  const tabs=[];let y=state.year,m=state.month;
   for(let i=0;i<6;i++){
     tabs.push({y,m,label:MONTH_NAMES[m-1].slice(0,3)+" '"+String(y).slice(2)});
     m--;if(m<1){m=12;y--;}
@@ -344,7 +324,6 @@ function renderLogsTabs(){
 }
 
 function switchLogsTab(y,m,btn){
-  logsViewAll=false;
   document.querySelectorAll('.logs-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('viewAllBtn').style.display='flex';
@@ -352,76 +331,144 @@ function switchLogsTab(y,m,btn){
 }
 
 function showAllLogs(){
-  logsViewAll=true;
   document.getElementById('viewAllBtn').style.display='none';
   document.querySelectorAll('.logs-tab').forEach(b=>b.classList.remove('active'));
-  // Collect all months that have data for this habit
-  const allKeys=Object.keys(state.data).filter(k=>k.endsWith(':'+logsHabitIndex));
-  const monthSet=new Set(allKeys.map(k=>k.split(':').slice(0,2).join('-')));
+  // Collect unique months that have data for this habit
+  const monthSet=new Set();
+  Object.keys(state.data).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===3&&parseInt(parts[2])===logsHabitIndex){
+      monthSet.add(parts[0]); // "YYYY-MM"
+    }
+  });
   const months=[...monthSet].sort().reverse();
-  if(months.length===0){document.getElementById('logsBody').innerHTML='<div class="empty-logs">Koi logs nahi hain abhi</div>';return;}
+  if(!months.length){document.getElementById('logsBody').innerHTML='<div class="empty-logs">Koi logs nahi hain abhi 🌱</div>';return;}
   let html='';
   months.forEach(mk=>{
     const [y,m]=mk.split('-').map(Number);
-    html+=`<div class="log-month-label">${MONTH_NAMES[m-1]} ${y}</div>`;
-    html+=renderLogsForMonth(y,m);
+    const entries=getLogsForMonth(y,m);
+    if(entries){
+      html+=`<div class="month-section-label">${MONTH_NAMES[m-1]} ${y}</div>`;
+      html+=entries;
+    }
   });
-  document.getElementById('logsBody').innerHTML=html||'<div class="empty-logs">Koi logs nahi hain abhi</div>';
+  document.getElementById('logsBody').innerHTML=html||'<div class="empty-logs">Koi logs nahi hain abhi 🌱</div>';
 }
 
 function renderLogsBody(y,m){
-  const html=renderLogsForMonth(y,m);
-  document.getElementById('logsBody').innerHTML=html||'<div class="empty-logs">Is mahine koi entry nahi</div>';
+  const html=getLogsForMonth(y,m);
+  document.getElementById('logsBody').innerHTML=html||'<div class="empty-logs">Is mahine koi entry nahi 🌱</div>';
 }
 
-function renderLogsForMonth(y,m){
-  const days=new Date(y,m,0).getDate();
+function getLogsForMonth(y,m){
+  const days=getDays(y,m);
   let html='';
   for(let d=1;d<=days;d++){
     const ck=cellKey(d,logsHabitIndex,y,m);
-    const nk=noteKey(d,logsHabitIndex,y,m);
     if(state.data[ck]){
+      const nk=noteKey(d,logsHabitIndex,y,m);
       const note=state.notes[nk]||'';
       html+=`<div class="log-entry">
-        <div><div class="log-day">${d}</div><div class="log-day-label">${MONTH_NAMES[m-1].slice(0,3)}</div></div>
-        <div class="log-content">
-          <div class="log-habit" style="color:${ALL_COLORS[logsHabitIndex]}">✅ ${state.habits[logsHabitIndex]||'Habit '+(logsHabitIndex+1)}</div>
-          ${note?`<div class="log-note">${note}</div>`:`<div class="log-no-note">No note added</div>`}
-        </div>
+        <div class="log-day-badge">${d}</div>
+        ${note
+          ?`<div class="log-note-text">${note}</div>`
+          :`<div class="log-no-note">No note</div>`
+        }
+        <button class="log-edit-btn" onclick="editLog(${d},${logsHabitIndex},${y},${m})" title="Edit note">✏️</button>
       </div>`;
     }
   }
   return html;
 }
 
-// ── ACTIONS ──
-function toggleCell(day,hi){
-  if(isFuture(day))return;
-  // Always open note modal on tap
-  openNoteModal(day,hi);
+function editLog(day,hi,y,m){
+  // Close logs modal, open note modal for that specific day
+  closeLogsModal();
+  // Temporarily set state to that month/year for the modal
+  const origYear=state.year, origMonth=state.month;
+  state.year=y;state.month=m;
+  pendingDay=day;pendingHi=hi;
+  const done=!!state.data[cellKey(day,hi,y,m)];
+  const existingNote=state.notes[noteKey(day,hi,y,m)]||'';
+  document.getElementById('noteDot').style.background=ALL_COLORS[hi];
+  document.getElementById('noteTitle').textContent=state.habits[hi]||'Habit '+(hi+1);
+  document.getElementById('noteDate').textContent=MONTH_NAMES[m-1]+' '+day+', '+y;
+  document.getElementById('noteInput').value=existingNote;
+  document.getElementById('noteInput').placeholder='Edit your note...';
+  const badge=document.getElementById('noteStatusBadge');
+  badge.textContent='✅ Done';badge.className='modal-status status-done';
+  document.getElementById('undoBtn').style.display='block';
+  document.getElementById('noteSaveBtn').textContent='💾 Update Note';
+  document.getElementById('noteModal').classList.add('open');
+  // Restore state year/month after modal closes
+  const origClose=closeNoteModal;
+  window._editLogClose=function(){
+    state.year=origYear;state.month=origMonth;
+    document.getElementById('noteModal').classList.remove('open');
+    pendingDay=null;pendingHi=null;
+    // reopen logs
+    setTimeout(()=>openLogsModal(hi),100);
+  };
+  document.getElementById('noteModal').onclick=function(e){if(e.target===this)window._editLogClose();};
+  document.querySelector('.modal-cancel').onclick=window._editLogClose;
+  setTimeout(()=>document.getElementById('noteInput').focus(),100);
 }
 
+// ── ACTIONS ──
+function toggleCell(day,hi){if(isFuture(day))return;openNoteModal(day,hi);}
 function addHabit(){
   const input=document.getElementById('newHabitInput');const val=input.value.trim();
   if(!val||state.habits.length>=MAX_HABITS)return;
   state.habits.push(val);input.value='';save();render();
 }
-
 function deleteHabit(i){
   if(state.habits.length<=1)return;
-  if(!confirm(`Delete "${state.habits[i]}"?`))return;
-  state.habits.splice(i,1);save();render();
-}
+  if(!confirm(`Delete "${state.habits[i]}"? Iske saare logs bhi delete ho jaayenge.`))return;
 
+  // Delete all data+notes for habit i
+  Object.keys(state.data).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===3&&parseInt(parts[2])===i)delete state.data[k];
+  });
+  Object.keys(state.notes).forEach(k=>{
+    const parts=k.split(':');
+    // noteKey format: "note:YYYY-MM:d:hi"
+    if(parts.length===4&&parseInt(parts[3])===i)delete state.notes[k];
+  });
+
+  // Reindex habits above i (shift down by 1)
+  const newData={},newNotes={};
+  Object.keys(state.data).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===3){
+      const hi=parseInt(parts[2]);
+      if(hi>i)newData[`${parts[0]}:${parts[1]}:${hi-1}`]=state.data[k];
+      else newData[k]=state.data[k];
+    }
+  });
+  Object.keys(state.notes).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===4){
+      const hi=parseInt(parts[3]);
+      if(hi>i)newNotes[`${parts[0]}:${parts[1]}:${parts[2]}:${hi-1}`]=state.notes[k];
+      else newNotes[k]=state.notes[k];
+    }
+  });
+
+  state.data=newData;
+  state.notes=newNotes;
+  state.habits.splice(i,1);
+  save();render();
+}
 function updateHabit(i,val){state.habits[i]=val;save();renderLegend();renderStats();}
 
 // ── SVG ──
-function polarToXY(cx,cy,r,angleDeg){const rad=(angleDeg-90)*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
-function arcPath(cx,cy,r1,r2,startDeg,endDeg){
-  const s1=polarToXY(cx,cy,r1,startDeg),e1=polarToXY(cx,cy,r1,endDeg);
-  const s2=polarToXY(cx,cy,r2,endDeg),e2=polarToXY(cx,cy,r2,startDeg);
-  const large=(endDeg-startDeg)>180?1:0;
-  return`M${s1.x},${s1.y} A${r1},${r1} 0 ${large} 1 ${e1.x},${e1.y} L${s2.x},${s2.y} A${r2},${r2} 0 ${large} 0 ${e2.x},${e2.y} Z`;
+function polarToXY(cx,cy,r,a){const rad=(a-90)*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
+function arcPath(cx,cy,r1,r2,s,e){
+  const p1=polarToXY(cx,cy,r1,s),p2=polarToXY(cx,cy,r1,e);
+  const p3=polarToXY(cx,cy,r2,e),p4=polarToXY(cx,cy,r2,s);
+  const lg=(e-s)>180?1:0;
+  return`M${p1.x},${p1.y} A${r1},${r1} 0 ${lg} 1 ${p2.x},${p2.y} L${p3.x},${p3.y} A${r2},${r2} 0 ${lg} 0 ${p4.x},${p4.y} Z`;
 }
 function ringWidth(){return Math.floor((245-62-(state.habits.length-1)*2)/state.habits.length);}
 
@@ -432,24 +479,24 @@ function renderHabits(){
       <div class="habit-dot" style="background:${ALL_COLORS[i]}"></div>
       <input class="habit-input" value="${h.replace(/"/g,'&quot;')}" placeholder="Habit ${i+1}" oninput="updateHabit(${i},this.value)"/>
       ${state.habits.length>1?`<button class="del-habit-btn" onclick="deleteHabit(${i})" title="Delete">🗑</button>`:''}
-    </div>
-  `).join('');
+    </div>`).join('');
   const addRow=document.getElementById('addRow'),maxNote=document.getElementById('maxNote');
   if(state.habits.length>=MAX_HABITS){addRow.style.display='none';maxNote.textContent='Max 8 habits reached';}
   else{addRow.style.display='flex';maxNote.textContent='';}
 }
 
 function renderLegend(){
-  document.getElementById('legend').innerHTML=state.habits.map((h,i)=>`
-    <div class="legend-item" onclick="openLogsModal(${i})" title="Click to see logs">
-      <div class="legend-dot" style="background:${ALL_COLORS[i]}"></div>
-      <span>${h||'Habit '+(i+1)}</span>
-    </div>
-  `).join('')+'<div style="font-size:10px;color:#ccc;width:100%;text-align:center;margin-top:2px">👆 Habit name tap karo logs dekhne ke liye</div>';
+  document.getElementById('legend').innerHTML=
+    state.habits.map((h,i)=>`
+      <div class="legend-item" onclick="openLogsModal(${i})" title="Logs dekhne ke liye tap karo">
+        <div class="legend-dot" style="background:${ALL_COLORS[i]}"></div>
+        <span>${h||'Habit '+(i+1)}</span>
+      </div>`).join('')+
+    '<div class="legend-hint">👆 Habit tap karo — logs dekhne ke liye</div>';
 }
 
 function renderWheel(){
-  const days=getDays(),cx=280,cy=280,innerR=62,ringGap=2,ringW=ringWidth(),anglePerDay=360/days;
+  const days=getDays(),cx=280,cy=280,innerR=62,ringGap=2,ringW=ringWidth(),apd=360/days;
   let html='';
   const now=new Date();
   const isCurrentMonth=state.year===now.getFullYear()&&state.month===(now.getMonth()+1);
@@ -459,7 +506,7 @@ function renderWheel(){
   for(let hi=0;hi<state.habits.length;hi++){
     const r1=innerR+(hi*(ringW+ringGap)),r2=r1+ringW;
     for(let d=1;d<=days;d++){
-      const startA=(d-1)*anglePerDay+0.6,endA=d*anglePerDay-0.6;
+      const sA=(d-1)*apd+0.6,eA=d*apd-0.6;
       const done=!!state.data[cellKey(d,hi)];
       const hasNote=!!state.notes[noteKey(d,hi)];
       const future=isFuture(d)&&!isPastMonth,today=isToday(d);
@@ -467,29 +514,24 @@ function renderWheel(){
       if(done)fill=ALL_COLORS[hi];
       else if(future){fill='#EFEFEF';opacity=0.4;cursor='not-allowed';}
       else fill=ALL_LIGHT[hi];
-      const path=arcPath(cx,cy,r1,r2,startA,endA);
+      const path=arcPath(cx,cy,r1,r2,sA,eA);
       const onclick=future?'':` onclick="toggleCell(${d},${hi})"`;
-      const titleText=`${MONTH_NAMES[state.month-1]} ${d} — ${state.habits[hi]} — ${done?'✅ Done':'⬜ Not done'}${hasNote?' 📝':''}`;
-      html+=`<path d="${path}" fill="${fill}" stroke="${today?'#FF3B30':'#fff'}" stroke-width="${today?2.5:1}" opacity="${opacity}" style="cursor:${cursor}"${onclick}><title>${titleText}</title></path>`;
-      // Small note indicator dot
+      html+=`<path d="${path}" fill="${fill}" stroke="${today?'#FF3B30':'#fff'}" stroke-width="${today?2.5:1}" opacity="${opacity}" style="cursor:${cursor}"${onclick}><title>${MONTH_NAMES[state.month-1]} ${d} — ${state.habits[hi]} — ${done?'✅ Done':'⬜ Not done'}${hasNote?' 📝':''}</title></path>`;
       if(done&&hasNote){
-        const midA=(startA+endA)/2;
-        const midR=(r1+r2)/2;
-        const mp=polarToXY(cx,cy,midR,midA);
-        html+=`<circle cx="${mp.x}" cy="${mp.y}" r="2.5" fill="white" opacity="0.7" style="pointer-events:none"/>`;
+        const midA=(sA+eA)/2,midR=(r1+r2)/2,mp=polarToXY(cx,cy,midR,midA);
+        html+=`<circle cx="${mp.x}" cy="${mp.y}" r="2.5" fill="white" opacity="0.75" style="pointer-events:none"/>`;
       }
     }
   }
   const labelR=innerR+(state.habits.length*(ringW+ringGap))+15;
   for(let d=1;d<=days;d++){
-    const angle=(d-0.5)*anglePerDay,pos=polarToXY(cx,cy,labelR,angle),today=isToday(d),future=isFuture(d)&&!isPastMonth;
+    const angle=(d-0.5)*apd,pos=polarToXY(cx,cy,labelR,angle),today=isToday(d),future=isFuture(d)&&!isPastMonth;
     html+=`<text x="${pos.x}" y="${pos.y}" text-anchor="middle" dominant-baseline="middle" font-size="${today?13:10}" font-weight="${today?'500':'400'}" fill="${today?'#FF3B30':future?'#ccc':'#888'}">${d}</text>`;
   }
   html+=`<text x="${cx}" y="${cy-18}" text-anchor="middle" font-size="13" font-weight="500" fill="#FF3B30">${MONTH_NAMES[state.month-1]}</text>`;
   html+=`<text x="${cx}" y="${cy}" text-anchor="middle" font-size="11" fill="#bbb">${days} days</text>`;
   html+=`<text x="${cx}" y="${cy+16}" text-anchor="middle" font-size="10" fill="#ccc">tap to log</text>`;
   document.getElementById('wheel').innerHTML=html;
-
   const infoNote=document.getElementById('infoNote');
   if(isPastMonth)infoNote.textContent='Past month — you can still edit entries';
   else if(isCurrentMonth)infoNote.textContent='Tap any day to mark done + add a note 📝';
@@ -505,15 +547,13 @@ function renderStats(){
   document.getElementById('statsRow').innerHTML=state.habits.map((h,i)=>{
     const done=Array.from({length:days},(_,d)=>d+1).filter(d=>state.data[cellKey(d,i)]).length;
     const pct=countableDays?Math.round(done/countableDays*100):0;
-    return`<div class="stat-card" onclick="openLogsModal(${i})" style="cursor:pointer" title="Click to see logs"><div class="stat-pct" style="color:${ALL_COLORS[i]}">${pct}%</div><div class="stat-name">${h||'Habit '+(i+1)}</div></div>`;
+    return`<div class="stat-card" onclick="openLogsModal(${i})" title="Logs dekhne ke liye tap karo"><div class="stat-pct" style="color:${ALL_COLORS[i]}">${pct}%</div><div class="stat-name">${h||'Habit '+(i+1)}</div></div>`;
   }).join('');
 }
 
 function render(){renderHabits();renderLegend();renderWheel();renderStats();}
-
 document.getElementById('addHabitBtn').onclick=addHabit;
 document.getElementById('newHabitInput').onkeydown=e=>{if(e.key==='Enter')addHabit();};
-
 init();
 </script>
 </body>
