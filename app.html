@@ -23,7 +23,8 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .greeting{font-size:13px;color:#FF6B35;font-weight:500;margin-bottom:1rem}
 .habits-section{background:#fff;border:2px solid #FFE0CC;border-radius:14px;padding:1rem;margin-bottom:1rem}
 .habits-section-title{font-size:11px;color:#999;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px}
-.habit-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.habit-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;border-radius:10px;padding:2px;transition:background 0.3s}
+.habit-row.today-done{border-radius:10px}
 .habit-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
 .habit-input{flex:1;border:2px solid #FFD6C8;border-radius:8px;padding:5px 10px;font-size:13px;color:#333;background:#FFF9F0}
 .habit-input:focus{outline:none;border-color:#FF6B35}
@@ -46,6 +47,11 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .legend-hint{font-size:10px;color:#ccc;width:100%;text-align:center;margin-top:2px}
 .emoji-btn{background:#FFF9F0;border:2px solid #FFD6C8;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
 .emoji-btn:hover{background:#FFE0CC;border-color:#FF9500}
+.today-toggle{border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;background:#f0f0f0;color:#ccc}
+.today-toggle.done{color:#fff;font-size:13px}
+.today-toggle:hover{opacity:0.85}
+.habit-input-wrap{flex:1;position:relative;display:flex;align-items:center}
+.habit-input-wrap .habit-input{flex:1;transition:background 0.3s,border 0.3s}
 /* Emoji picker popup */
 .emoji-picker{position:fixed;z-index:2000;background:#fff;border:2px solid #FFE0CC;border-radius:14px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,0.15);display:none;flex-direction:column;gap:6px;width:260px}
 .emoji-picker.open{display:flex}
@@ -100,11 +106,46 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .empty-logs{text-align:center;padding:2rem;color:#bbb;font-size:13px}
 .view-all-btn{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:1rem;padding:10px;border:2px solid #FFD6C8;border-radius:10px;background:#fff;color:#FF3B30;cursor:pointer;font-size:13px;font-weight:500;width:100%;transition:all 0.2s;flex-shrink:0}
 .view-all-btn:hover{background:#FFF0EB}
+/* Archive */
+.archive-btn{background:none;border:2px solid #FFD6C8;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;color:#999}
+.archive-btn:hover{background:#FFF3E0;border-color:#FF9500;color:#FF9500}
+.archived-section{background:#fff;border:2px dashed #FFE0CC;border-radius:14px;padding:1rem;margin-bottom:1rem}
+.archived-section-title{font-size:11px;color:#bbb;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.archived-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;opacity:0.7}
+.archived-name{flex:1;font-size:13px;color:#999;padding:5px 10px}
+.archived-date{font-size:10px;color:#ccc;white-space:nowrap}
+.restore-btn{padding:4px 10px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#4CAF50;cursor:pointer;font-size:11px;font-weight:500;white-space:nowrap;transition:all 0.2s}
+.restore-btn:hover{background:#E8F5E9;border-color:#4CAF50}
+.perm-delete-btn{background:none;border:2px solid #FFD6C8;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#ccc;transition:all 0.2s}
+.perm-delete-btn:hover{background:#FFEAEA;border-color:#FF3B30;color:#FF3B30}
+/* Delete confirm modal */
+.del-modal{background:#fff;border-radius:18px;padding:1.5rem;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.del-modal-title{font-size:15px;font-weight:600;color:#333;margin-bottom:8px}
+.del-modal-desc{font-size:13px;color:#666;line-height:1.5;margin-bottom:1.2rem}
+.del-modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.del-archive-btn{padding:8px 16px;border:none;border-radius:8px;background:#FF9500;color:#fff;cursor:pointer;font-size:13px;font-weight:500}
+.del-archive-btn:hover{background:#E08000}
+.del-confirm-btn{padding:8px 16px;border:none;border-radius:8px;background:#FF3B30;color:#fff;cursor:pointer;font-size:13px;font-weight:500}
+.del-confirm-btn:hover{background:#E02020}
+.del-cancel-btn{padding:8px 14px;border:2px solid #FFD6C8;border-radius:8px;background:#fff;color:#666;cursor:pointer;font-size:13px}
 </style>
 </head>
 <body>
 
 <div class="emoji-picker" id="emojiPicker"></div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal-overlay" id="delModal">
+  <div class="del-modal">
+    <div class="del-modal-title">🗑 Habit hatao</div>
+    <div class="del-modal-desc" id="delModalDesc"></div>
+    <div class="del-modal-btns">
+      <button class="del-cancel-btn" onclick="closeDelModal()">Cancel</button>
+      <button class="del-archive-btn" onclick="confirmArchive()">📦 Archive karo</button>
+      <button class="del-confirm-btn" onclick="confirmDelete()">🗑 Delete karo</button>
+    </div>
+  </div>
+</div>
 
 <!-- Note Modal -->
 <div class="modal-overlay" id="noteModal">
@@ -167,6 +208,15 @@ body{background:#FFF9F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
     <div class="max-note" id="maxNote"></div>
   </div>
 
+  <!-- Archived habits -->
+  <div class="archived-section" id="archivedSection" style="display:none">
+    <div class="archived-section-title" onclick="toggleArchivedView()">
+      <span>📦 Archived Habits</span>
+      <span id="archivedToggleIcon">▼</span>
+    </div>
+    <div id="archivedList" style="display:none"></div>
+  </div>
+
   <div class="legend" id="legend"></div>
   <div class="info-note" id="infoNote"></div>
   <div class="wheel-wrap">
@@ -192,7 +242,7 @@ const ALL_LIGHT= ['#C8E6C9','#FFE0B2','#BBDEFB','#FCE4EC','#E1BEE7','#B2EBF2','#
 const MAX_HABITS=8;
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-let state={habits:['Morning walk','Study 1hr','No junk food','Read 30min'],emojis:['🚶','📚','🥗','📖'],data:{},notes:{},year:2026,month:5};
+let state={habits:['Morning walk','Study 1hr','No junk food','Read 30min'],emojis:['🚶','📚','🥗','📖'],data:{},notes:{},archived:[],year:2026,month:5};
 let currentUser=null;
 let saveTimer=null, toastTimer=null;
 let pendingDay=null, pendingHi=null;
@@ -217,12 +267,13 @@ async function logout(){await sb.auth.signOut();window.location.href='index.html
 // ── DATA ──
 async function loadData(){
   const now=new Date();state.year=now.getFullYear();state.month=now.getMonth()+1;
-  const {data}=await sb.from('habit_data').select('habits,data,notes,emojis').eq('user_id',currentUser.id).single();
+  const {data}=await sb.from('habit_data').select('habits,data,notes,emojis,archived').eq('user_id',currentUser.id).single();
   if(data){
     if(data.habits&&data.habits.length>0)state.habits=data.habits;
     if(data.data)state.data=data.data;
     if(data.notes)state.notes=data.notes;
     if(data.emojis)state.emojis=data.emojis;
+    if(data.archived)state.archived=data.archived;
   }
 }
 
@@ -232,9 +283,9 @@ async function save(){
     const {data:existing}=await sb.from('habit_data').select('id').eq('user_id',currentUser.id).single();
     let error;
     if(existing){
-      ({error}=await sb.from('habit_data').update({habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id));
+      ({error}=await sb.from('habit_data').update({habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,archived:state.archived,updated_at:new Date().toISOString()}).eq('user_id',currentUser.id));
     } else {
-      ({error}=await sb.from('habit_data').insert({user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,updated_at:new Date().toISOString()}));
+      ({error}=await sb.from('habit_data').insert({user_id:currentUser.id,habits:state.habits,data:state.data,notes:state.notes,emojis:state.emojis,archived:state.archived,updated_at:new Date().toISOString()}));
     }
     if(error)showToast('Save failed!','error');
     else showToast('✓ Saved','success');
@@ -294,7 +345,7 @@ function saveNote(){
   state.data[ck]=true;
   if(note)state.notes[nk]=note;
   else delete state.notes[nk];
-  save();renderWheel();renderStats();
+  save();renderWheel();renderStats();renderHabits();renderLegend();
   closeNoteModal();
 }
 
@@ -304,7 +355,7 @@ function undoCell(){
   const nk=noteKey(pendingDay,pendingHi);
   delete state.data[ck];
   delete state.notes[nk];
-  save();renderWheel();renderStats();
+  save();renderWheel();renderStats();renderHabits();renderLegend();
   closeNoteModal();
   showToast('Removed ✓','success');
 }
@@ -433,22 +484,73 @@ function addHabit(){
   state.emojis.push(val[0]?.toUpperCase()||'⭐');
   input.value='';save();render();
 }
-function deleteHabit(i){
-  if(state.habits.length<=1)return;
-  if(!confirm(`Delete "${state.habits[i]}"? Iske saare logs bhi delete ho jaayenge.`))return;
+let pendingDeleteIndex=null;
 
-  // Delete all data+notes for habit i
+function deleteHabit(i){
+  if(state.habits.length<=1){showToast('Kam se kam ek habit honi chahiye!','error');return;}
+  pendingDeleteIndex=i;
+  document.getElementById('delModalDesc').innerHTML=
+    `<strong>${state.emojis[i]||''} ${state.habits[i]}</strong> ko kya karna chahti ho?<br><br>
+    <span style="color:#FF9500">📦 Archive</span> — habit hide ho jaayegi, data safe rahega. Kabhi bhi restore kar sako.<br><br>
+    <span style="color:#FF3B30">🗑 Delete</span> — habit aur saara data permanently delete ho jaayega.`;
+  document.getElementById('delModal').classList.add('open');
+}
+
+function closeDelModal(){
+  document.getElementById('delModal').classList.remove('open');
+  pendingDeleteIndex=null;
+}
+document.getElementById('delModal').onclick=function(e){if(e.target===this)closeDelModal();};
+
+function confirmArchive(){
+  const i=pendingDeleteIndex;
+  if(i===null)return;
+  // Save to archived array with all data
+  const habitData={},habitNotes={};
+  Object.keys(state.data).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===3&&parseInt(parts[2])===i){
+      habitData[`${parts[0]}:${parts[1]}`]=state.data[k];
+    }
+  });
+  Object.keys(state.notes).forEach(k=>{
+    const parts=k.split(':');
+    if(parts.length===4&&parseInt(parts[3])===i){
+      habitNotes[`${parts[0]}:${parts[1]}:${parts[2]}`]=state.notes[k];
+    }
+  });
+  state.archived.push({
+    name:state.habits[i],
+    emoji:state.emojis[i]||'⭐',
+    archivedAt:new Date().toISOString().slice(0,10),
+    data:habitData,
+    notes:habitNotes
+  });
+  // Now remove from active (reindex)
+  _removeHabitAt(i);
+  closeDelModal();
+  showToast('📦 Archived! Restore kar sako kabhi bhi.','success');
+}
+
+function confirmDelete(){
+  const i=pendingDeleteIndex;
+  if(i===null)return;
+  _removeHabitAt(i);
+  closeDelModal();
+  showToast('Deleted ✓','success');
+}
+
+function _removeHabitAt(i){
+  // Delete data+notes for habit i
   Object.keys(state.data).forEach(k=>{
     const parts=k.split(':');
     if(parts.length===3&&parseInt(parts[2])===i)delete state.data[k];
   });
   Object.keys(state.notes).forEach(k=>{
     const parts=k.split(':');
-    // noteKey format: "note:YYYY-MM:d:hi"
     if(parts.length===4&&parseInt(parts[3])===i)delete state.notes[k];
   });
-
-  // Reindex habits above i (shift down by 1)
+  // Reindex
   const newData={},newNotes={};
   Object.keys(state.data).forEach(k=>{
     const parts=k.split(':');
@@ -466,14 +568,84 @@ function deleteHabit(i){
       else newNotes[k]=state.notes[k];
     }
   });
-
   state.data=newData;
   state.notes=newNotes;
   state.habits.splice(i,1);
   state.emojis.splice(i,1);
   save();render();
 }
+
+function restoreHabit(ai){
+  if(state.habits.length>=MAX_HABITS){showToast('Max 8 habits! Pehle koi delete karo.','error');return;}
+  const archived=state.archived[ai];
+  const newIdx=state.habits.length;
+  state.habits.push(archived.name);
+  state.emojis.push(archived.emoji);
+  // Restore data with new index
+  Object.keys(archived.data).forEach(k=>{
+    state.data[`${k}:${newIdx}`]=archived.data[k];
+  });
+  Object.keys(archived.notes).forEach(k=>{
+    state.notes[`note:${k}:${newIdx}`]=archived.notes[k];
+  });
+  state.archived.splice(ai,1);
+  save();render();
+  showToast(`♻️ ${archived.name} restore ho gayi!`,'success');
+}
+
+function permDeleteArchived(ai){
+  if(!confirm(`"${state.archived[ai].name}" ko permanently delete karein? Ye action undo nahi ho sakta.`))return;
+  state.archived.splice(ai,1);
+  save();renderArchived();
+  showToast('Permanently deleted','success');
+}
+
+function toggleArchivedView(){
+  const list=document.getElementById('archivedList');
+  const icon=document.getElementById('archivedToggleIcon');
+  if(list.style.display==='none'){list.style.display='block';icon.textContent='▲';}
+  else{list.style.display='none';icon.textContent='▼';}
+}
+
+function renderArchived(){
+  const section=document.getElementById('archivedSection');
+  const list=document.getElementById('archivedList');
+  if(!state.archived||state.archived.length===0){section.style.display='none';return;}
+  section.style.display='block';
+  list.innerHTML=state.archived.map((a,i)=>`
+    <div class="archived-row">
+      <span style="font-size:18px;flex-shrink:0">${a.emoji}</span>
+      <span class="archived-name">${a.name}</span>
+      <span class="archived-date">archived ${a.archivedAt}</span>
+      <button class="restore-btn" onclick="restoreHabit(${i})">♻️ Restore</button>
+      <button class="perm-delete-btn" onclick="permDeleteArchived(${i})" title="Permanently delete">🗑</button>
+    </div>
+  `).join('');
+}
 function updateHabit(i,val){state.habits[i]=val;save();renderLegend();renderStats();}
+
+function quickToggleToday(hi){
+  const now=new Date();
+  const d=now.getDate(),m=now.getMonth()+1,y=now.getFullYear();
+  const ck=cellKey(d,hi,y,m);
+  if(state.data[ck]){
+    // Already done — open modal to undo or update note
+    // Save original month/year state
+    const origY=state.year,origM=state.month;
+    state.year=y;state.month=m;
+    openNoteModal(d,hi);
+    // After close restore
+    const origClose=window._quickClose;
+    window._quickClose=function(){
+      state.year=origY;state.month=origM;
+    };
+  } else {
+    // Not done — mark done directly + open note modal
+    const origY=state.year,origM=state.month;
+    state.year=y;state.month=m;
+    openNoteModal(d,hi);
+  }
+}
 
 // ── SVG ──
 function polarToXY(cx,cy,r,a){const rad=(a-90)*Math.PI/180;return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};}
@@ -509,20 +681,38 @@ function getStreakAt(day,hi,y,m){
 // ── EMOJI PICKER ──
 const EMOJI_LIST=[
   // Health & Fitness
-  '🚶','🏃','🧘','💪','🚴','🏊','🤸','🧗','🏋️','⚽','🏀','🎾','🏸','🏓','🎯','🥊',
+  '🚶','🏃','🧘','💪','🚴','🏊','🤸','🧗','🏋️','🤼','🤺','⛹️','🏌️','🧜','🚵','🏄','🤽','🥋','🥊',
+  // Sports
+  '⚽','🏀','🏈','⚾','🥎','🎾','🏐','🏉','🥏','🎯','🏓','🏸','⛳','🎱','🪀','🎮','🕹️','🎲','♟️','🧩','🎳','🏆','🥇','🥈','🥉','🎽','👟',
   // Mind & Study
-  '📚','✍️','📖','🎓','🧠','💡','🔬','🧪','📐','📏','🖊️','📓','📒','📔','🗒️','💻',
-  // Food & Health
-  '🥗','🥑','💧','🍎','🥦','🍇','🫐','🥕','🍳','☕','🍵','🧃','🫖','🥤','🍱','🥙',
-  // Lifestyle
-  '😴','🌿','🧹','🪴','🐕','🐱','🎨','🎵','🎸','🎹','🎭','📸','✈️','🏖️','🌅','🌙',
-  // Work & Money
-  '💰','💼','📊','📈','🏆','🎉','⭐','🌟','🔥','⚡','❤️','🙏','✅','🎯','🗓️','⏰',
+  '📚','✍️','📖','🎓','🧠','💡','🔬','🧪','📐','📏','🖊️','🖋️','✒️','📓','📒','📔','📕','📗','📘','📙','🗒️','📋','📌','📍','🗂️','🔭','🧲','⚗️','🔮',
+  // Technology
+  '💻','🖥️','🖨️','⌨️','🖱️','💾','💿','📱','☎️','📡','🔋','🔌','📺','📷','📸','🎥','📹','🎬','📽️','🎞️',
+  // Food & Drink
+  '🥗','🥑','💧','🍎','🥦','🍇','🫐','🥕','🍳','☕','🍵','🧃','🫖','🥤','🍱','🥙','🥘','🍲','🫕','🥣','🍿','🧁','🍰','🎂','🍪','🍩','🍫','🍬','🥐','🍞','🧇','🥞','🧆','🥚','🍜','🍝','🍛','🍣','🌮','🌯','🥪','🧀','🥩','🥓','🌽','🍆','🥒','🌶️','🫑','🧄','🧅','🍊','🍋','🍌','🍉','🍓','🍒','🥝','🫒',
+  // Nature & Plants
+  '🌿','🍀','🌱','🌲','🌳','🌴','🌵','🎋','🎍','🍃','🍂','🍁','🌾','🌺','🌸','🌼','🌻','🌹','🥀','🌷','💐','🍄','🌊','🌈','⭐','🌟','💫','✨','☀️','🌙','🌛','🌝','🌞','❄️','⛄','🌪️','⛅','🌤️','☔','⚡','☄️','🔥',
+  // Animals
+  '🐕','🐈','🐇','🐹','🐠','🦜','🦋','🐝','🐢','🦊','🦁','🐯','🐻','🐼','🐨','🦄','🦅','🦆','🦉','🦚','🐬','🐳','🦭','🐸','🦎','🐊','🦕','🦖','🐙','🦑','🦀','🦞','🐡','🦋','🐛','🐌','🐞','🐜','🦟','🦗',
+  // Lifestyle & Home
+  '😴','🛁','🪥','🧹','🧺','🧼','🪴','🕯️','🛋️','🪑','🛏️','🚿','🪞','🧸','🎁','🛒','🧺','🪣','🫧','🧴','🪒','🧻','🪤','🧲','🔑','🗝️','🔓','🔏','🔐','🔒',
+  // Work & Career
+  '💰','💼','📊','📈','📉','🏢','🤝','📧','📮','📬','🗓️','⏰','⌚','⏱️','⏳','💹','🏦','🪙','💳','💎','🏅','🎖️','🏵️',
+  // Creative & Arts
+  '🎨','🎵','🎸','🎹','🎺','🎻','🥁','🎙️','🎤','🎧','🎼','🎭','🎪','🎬','📸','🖼️','✏️','🖌️','🖍️','🎠','🎡','🎢',
+  // Social Media & Content
+  '📱','💬','📣','📢','🗣️','👁️','❤️','👍','🔗','📲','🌐','💻','🎙️','🎬','📸','✍️','📝','🗞️','📰',
+  // Travel & Places
+  '✈️','🚀','🛸','🚁','⛵','🚢','🚂','🚆','🚇','🏖️','🏔️','🗻','🌋','🏕️','🗼','🗽','🏰','🌅','🌄','🌃','🌆','🌇','🌉','🛤️','🛣️','⛩️','🕌','⛪','🏯',
+  // Celebration & Hearts
+  '🎉','🎊','🎈','🎀','🎗️','❤️','🧡','💛','💚','💙','💜','🖤','🤍','💔','❣️','💕','💞','💓','💗','💖','💘','💝','🙏','👏','🤲','🫶','✅','🎯','💯','🔥','⚡','💥','🌈',
+  // Symbols & Signs
+  '♾️','☮️','✝️','☯️','🕉️','☪️','🔯','🧿','🪬','🧲','⚜️','🔰','♻️','🚫','⛔','🔞','📵','🚳','🚭','🚯','🚱','🚷','📴','📳','🔇','🔕','💤','🔆','🔅',
   // Number emojis
-  '1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟',
+  '0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟',
   // Letter emojis A-Z
   '🅐','🅑','🅒','🅓','🅔','🅕','🅖','🅗','🅘','🅙','🅚','🅛','🅜','🅝','🅞','🅟','🅠','🅡','🅢','🅣','🅤','🅥','🅦','🅧','🅨','🅩',
-];
+]
 
 // Fallback letter emojis using text (since some devices may not support 🅐 style)
 const LETTER_EMOJIS='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>l+'️⃣').join('');
@@ -583,11 +773,34 @@ document.addEventListener('click',function(e){
 
 // ── RENDER ──
 function renderHabits(){
+  const now=new Date();
+  const todayD=now.getDate(),todayM=now.getMonth()+1,todayY=now.getFullYear();
+  const isCurrentMonth=state.year===todayY&&state.month===todayM;
+
   document.getElementById('habitsRow').innerHTML=state.habits.map((h,i)=>{
     const em=state.emojis[i]||'⭐';
-    return`<div class="habit-row">
+    const color=ALL_COLORS[i];
+    const lightColor=ALL_LIGHT[i];
+    // Check if today is done
+    const todayKey=cellKey(todayD,i,todayY,todayM);
+    const todayDone=!!state.data[todayKey];
+
+    // Background fill when done
+    const rowBg=todayDone?`background:${lightColor};border-radius:10px;`:'';
+    const inputBg=todayDone?`background:${lightColor};border-color:${color};font-weight:500;color:#333`:'';
+
+    // Toggle button
+    const toggleBtn=`<button class="today-toggle${todayDone?' done':''}"
+      style="background:${todayDone?color:'#f0f0f0'}"
+      onclick="quickToggleToday(${i})"
+      title="${todayDone?'Done aaj — click to undo':'Aaj done karo'}">
+      ${todayDone?'✓':'○'}
+    </button>`;
+
+    return`<div class="habit-row" style="${rowBg}">
       <button class="emoji-btn" onclick="openEmojiPicker(${i},this)" title="Change emoji">${em}</button>
-      <input class="habit-input" value="${h.replace(/"/g,'&quot;')}" placeholder="Habit ${i+1}" oninput="updateHabit(${i},this.value)"/>
+      <input class="habit-input" style="${inputBg}" value="${h.replace(/"/g,'&quot;')}" placeholder="Habit ${i+1}" oninput="updateHabit(${i},this.value)"/>
+      ${toggleBtn}
       ${state.habits.length>1?`<button class="del-habit-btn" onclick="deleteHabit(${i})" title="Delete">🗑</button>`:''}
     </div>`;
   }).join('');
@@ -680,7 +893,7 @@ function renderStats(){
   }).join('');
 }
 
-function render(){renderHabits();renderLegend();renderWheel();renderStats();}
+function render(){renderHabits();renderLegend();renderWheel();renderStats();renderArchived();}
 document.getElementById('addHabitBtn').onclick=addHabit;
 document.getElementById('newHabitInput').onkeydown=e=>{if(e.key==='Enter')addHabit();};
 init();
